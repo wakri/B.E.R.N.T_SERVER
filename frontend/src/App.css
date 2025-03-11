@@ -1,0 +1,194 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+/* App.css */
+
+/* Overall page container */
+.page-container {
+  min-height: 100vh;
+  background-color: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styling */
+.header {
+  background-color: #007bff;
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-title {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* Main container with padding */
+.main-container {
+  padding: 1.5rem 0;
+}
+
+/* Card styling for content boxes */
+.card {
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Card title styling */
+.card-title {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white; 
+}
+
+/* Form input styling */
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Button base style */
+.button {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+/* Primary button style */
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+}
+
+/* Success button style */
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+/* Danger button style */
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Link button style */
+.btn-link {
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Dashboard title */
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+/* Device list styling */
+.device-list {
+  list-style: none;
+  padding: 10;
+  margin: 0;
+}
+
+.device-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+  color: white; 
+}
+
+/* Optional: sensor reading spacing */
+.sensor-reading p {
+  margin: 0.5rem 0;
+}
+
+
+
+.chart-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: space-between;
+  padding: 1%;
+  flex-wrap: wrap;
+}
+
+.chart-item {
+  width: 800px; 
+  box-sizing: border-box;
+  
+}
+
