@@ -27,6 +27,8 @@ export default function App() {
   const [deviceKey, setDeviceKey] = useState("");
   const [claimedDevices, setClaimedDevices] = useState([]);
   const [sensorData, setSensorData] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(20);
+
 
   // Authentication handler (register or login)
   const handleAuth = async (e) => {
@@ -109,11 +111,40 @@ export default function App() {
     }
   };
 
+
+
+
+  const downloadCSV = async () => {
+    try {
+      const res = await axios.get("https://bernt.xyz/api/sensor_data?format=csv", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob", // Important! Tells Axios to treat response as a file
+      });
+  
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "sensor_data.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Clean up
+    } catch (err) {
+      console.error("Error downloading CSV:", err);
+    }
+  };
+
+
+
+
   // When logged in, fetch devices and sensor data
   useEffect(() => {
     if (token) {
       fetchDevices();
-      fetchSensorData();
+      fetchSensorData();  
       // Optionally refresh sensor data every minute
       const interval = setInterval(fetchSensorData, 60000);
       return () => clearInterval(interval);
@@ -125,9 +156,13 @@ export default function App() {
 
   // Prepare chart data using the last 50 readings.
   // If the data is sorted descending (latest first), we reverse it for chronological order.
-  const last50Readings = sensorData.slice(0, 200).reverse();
+
+  const handleChange = (event) => {setSelectedValue(event.target.value)}
+
+  
+  const last50Readings = sensorData.slice(0, selectedValue).reverse();
   const labels = last50Readings.map((reading) =>
-    reading.timestamp.substring(11, 19)
+    reading.timestamp.substring(11, 20)
   ); // Format: HH:MM:SS
 
   const voltageCurrentData = {
@@ -138,12 +173,14 @@ export default function App() {
         data: last50Readings.map((reading) => reading.voltage),
         borderColor: "rgba(75,192,192,1)",
         fill: false,
+        radius: 0,
       },
       {
         label: "Current (A)",
         data: last50Readings.map((reading) => reading.current),
         borderColor: "rgba(153,102,255,1)",
         fill: false,
+        radius: 0, 
       },
     ],
   };
@@ -156,6 +193,7 @@ export default function App() {
         data: last50Readings.map((reading) => reading.watts),
         borderColor: "rgba(255,159,64,1)",
         fill: false,
+        radius: 0, 
       },
     ],
   };
@@ -179,6 +217,7 @@ export default function App() {
     return () => {
       axios.interceptors.response.eject(interceptor);
     };
+
   }, []);
 
   return (
@@ -218,9 +257,114 @@ export default function App() {
       ) : (
         <div className="dashboard">
           <h2 className="dashboard-title">B.E.R.N.T</h2>
+          <h3 className="dashboard-subtitle">Battery and Energy Remote Node Telemetry</h3>
 
-          {/* Claim Device Form */}
+
+    
+          <div className="mother-sbs">
+          {/* Display Latest Sensor Reading */}
+          <div className="card-sbs">
+            <h3 className="card-title-center">Voltage</h3>
+            {latestReading ? (
+              <div className="voltage-sensor-reading">
+               <h1>{latestReading.voltage} V</h1>
+              </div>
+            ) : (
+              <h1>No sensor data available.</h1>
+            )}
+          </div>
+
+           {/* Display Latest Sensor Reading */}
+           <div className="card-sbs">
+            <h3 className="card-title-center">Current</h3>
+            {latestReading ? (
+              <div className="voltage-sensor-reading">
+               <h1>{latestReading.current} A</h1>
+              </div>
+            ) : (
+              <h1>No sensor data available.</h1>
+            )}
+          </div>
+          </div>
+
+           {/* Display Latest Sensor Reading */}
+           <div className="card">
+            <h3 className="card-title-center">Power</h3>
+            {latestReading ? (
+              <div className="voltage-sensor-reading">
+               <h1>{latestReading.watts} W</h1>
+              </div>
+            ) : (
+              <h1>No sensor data available.</h1>
+            )}
+          </div>
+
+           {/* Display Latest Sensor Reading */}
+           <div className="card-energy">
+            <h3 className="card-title-center">Energy Used (session)</h3>
+            {latestReading ? (
+              <div className="voltage-sensor-reading">
+               <h1>{latestReading.watts} Wh</h1>
+              </div>
+            ) : (
+              <h1>No sensor data available.</h1>
+            )}
+          </div>
+          <div className="drop-down-div">
+          <button onClick={downloadCSV}>Download CSV</button>
+              <select id = "dropDown" value={selectedValue} onChange ={handleChange}>
+                      <option value={20}>Hour</option>
+                      <option value={200}>6 Hour</option>
+                      <option value={1000}>Day</option>
+                  </select>
+  
+              </div>
+            
+           <div className="chart-mother"> 
+            <div className="chart-container">
+
+
+                  <h4>Voltage &amp; Current</h4>
+                  <Line data={voltageCurrentData} />
+              </div>
+                
+            <div className="chart-container">
+                  <h4>Power consumption (Watts)</h4>
+                  <Line data={wattsChartData} />
+            </div>
+           </div>
+
+                      {/* Display Latest Sensor Reading */}
           <div className="card">
+            <h3 className="card-title">Latest Sensor Reading</h3>
+            {latestReading ? (
+              <div className="sensor-reading">
+                <p>
+                  <strong>Device ID:</strong> {latestReading.device_id}
+                </p>
+                <p>
+                  <strong>Timestamp:</strong> {latestReading.timestamp}
+                </p>
+                <p>
+                  <strong>Temperature:</strong> {latestReading.temperature}
+                </p>
+                <p>
+                  <strong>Voltage:</strong> {latestReading.voltage}
+                </p>
+                <p>
+                  <strong>Current:</strong> {latestReading.current}
+                </p>
+                <p>
+                  <strong>Watts:</strong> {latestReading.watts}
+                </p>
+              </div>
+            ) : (
+              <p>No sensor data available.</p>
+            )}
+          </div>
+              
+                      {/* Claim Device Form */}
+          <div className="card-form">
             <h3 className="card-title">Claim a Device</h3>
             <input
               type="text"
@@ -263,53 +407,8 @@ export default function App() {
             )}
           </div>
 
-          {/* Display Latest Sensor Reading */}
-          <div className="card">
-            <h3 className="card-title">Latest Sensor Reading</h3>
-            {latestReading ? (
-              <div className="sensor-reading">
-                <p>
-                  <strong>Device ID:</strong> {latestReading.device_id}
-                </p>
-                <p>
-                  <strong>Timestamp:</strong> {latestReading.timestamp}
-                </p>
-                <p>
-                  <strong>Temperature:</strong> {latestReading.temperature}
-                </p>
-                <p>
-                  <strong>Voltage:</strong> {latestReading.voltage}
-                </p>
-                <p>
-                  <strong>Current:</strong> {latestReading.current}
-                </p>
-                <p>
-                  <strong>Watts:</strong> {latestReading.watts}
-                </p>
-              </div>
-            ) : (
-              <p>No sensor data available.</p>
-            )}
-          </div>
 
-          {/* Display Sensor Data Charts Side by Side */}
-          {sensorData.length > 0 && (
-            <div className="card">
-              <h3 className="card-title">
-                Sensor Data Charts (Last 200 Readings)
-              </h3>
-              <div className="chart-container">
-                <div className="chart-item">
-                  <h4>Voltage &amp; Current</h4>
-                  <Line data={voltageCurrentData} />
-                </div>
-                <div className="chart-item">
-                  <h4>Watts</h4>
-                  <Line data={wattsChartData} />
-                </div>
-              </div>
-            </div>
-          )}
+  
         </div>
       )}
     </div>

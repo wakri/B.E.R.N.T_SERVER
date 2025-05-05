@@ -1,12 +1,16 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Query 
 from pydantic import BaseModel
 from typing import List
 import sqlite3
 import bcrypt
 import jwt
 from datetime import datetime, timedelta
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import uvicorn
+import io
+import csv
+from fastapi.responses import StreamingResponse
 
 # FastAPI instance
 app = FastAPI()
@@ -62,6 +66,26 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return {"id": user["id"], "email": user["email"]}
+
+
+
+origins = [
+    "http://localhost:3000",
+    "http://bernt.xyz",
+    "http://www.bernt.xyz",
+    "https://bernt.xyz",
+    "https://www.bernt.xyz",
+
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # API register user
 @app.post("/register")
@@ -124,7 +148,7 @@ def unclaim_device(device_id: str, user: dict = Depends(get_current_user)):
 
 #get and display sensor data for the device claimed by user.
 @app.get("/sensor_data")
-def get_sensor_data(user: dict = Depends(get_current_user)):
+def get_sensor_data(user: dict = Depends(get_current_user), format: str = Query("json")):
     conn = get_db()
     cursor = conn.cursor()
     data = cursor.execute("""
@@ -132,16 +156,37 @@ def get_sensor_data(user: dict = Depends(get_current_user)):
         FROM sensor_data s
         JOIN user_devices u ON s.device_id = u.device_id
         WHERE u.user_id = ?
-        ORDER BY s.db_timestamp DESC LIMIT 200
+        ORDER BY s.id DESC LIMIT 200
     """, (user["id"],)).fetchall()
     conn.close()
+
+    if format.lower() == "csv":
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["voltage","current","watts"])
+
+        for row in data:
+            writer.writerow([
+                str(round(row["voltage"],3)).replace(".",","),
+                str(round(row["current"],3)).replace(".",","),
+                str(round(row["watts"],3)).replace(".",",")])
+
+        output.seek(0)
+        return StreamingResponse(
+            output,
+            media_type="text/csv",
+            headers={"Content-Disposition":"attachment;filename=sensor_data.csv"}
+        )
+
+
+
     return [{
         "device_id": row["device_id"],
         "timestamp": row["device_timestamp"],
-        "temperature": row["temperature"],
-        "voltage": row["voltage"],
-        "current": row["current"],
-        "watts": row["watts"]
+        "temperature": round(row["temperature"],2),
+        "voltage": round(row["voltage"],3),
+        "current": round(row["current"],3),
+        "watts": round(row["watts"],3)
     } for row in data]
 
 if __name__ == "__main__":

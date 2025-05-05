@@ -44,9 +44,10 @@
 /* Overall page container */
 .page-container {
   min-height: 100vh;
-  background-color: #0d0d0d;
+  background-color: #141414;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 /* Header styling */
@@ -66,15 +67,67 @@
 /* Main container with padding */
 .main-container {
   padding: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  
+}
+.dashboard{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0%;
+
 }
 
-/* Card styling for content boxes */
-.card {
-  background-color: #1a1a1a;
-  padding: 1.5rem;
+.mother-sbs{
+  display: flex;
+  justify-content: center;
   margin-bottom: 1.5rem;
-  border-radius: 5px;
+  border-radius: 10px;
+  gap: 2%;
+  width: 90%;
+
+
+}
+/* Card styling for content boxes */
+.card-sbs {
+  background-color: #282828;
+  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 100%;
+  margin: 0;
+}
+
+.card {
+  background-color: #282828;
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 90%;
+ 
+}
+.card-form {
+  background-color: #282828;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 90%;
+ 
+}
+
+
+.card-energy {
+  background-color: #2fe462a3;
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 90%;
+ 
 }
 
 /* Card title styling */
@@ -83,13 +136,23 @@
   font-size: 1.25rem;
   font-weight: bold;
   color: white; 
+  margin: 20px;
+}
+
+.card-title-center {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white; 
+  text-align: center;
 }
 
 /* Form input styling */
 .form-control {
-  width: 100%;
+  width: 50%;
   padding: 0.75rem;
   margin-bottom: 1rem;
+  margin-left: 0px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
@@ -98,7 +161,8 @@
 /* Button base style */
 .button {
   display: inline-block;
-  width: 100%;
+  width: 50%px;
+  margin-left: 0px;
   padding: 0.75rem;
   font-size: 1rem;
   border: none;
@@ -132,6 +196,7 @@
 .btn-danger {
   background-color: #dc3545;
   color: white;
+  width: 200px;
 }
 
 .btn-danger:hover {
@@ -155,35 +220,73 @@
   color: white;
 }
 
+
+.dashboard-subtitle {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: white;
+}
+
+
 /* Device list styling */
 .device-list {
   list-style: none;
-  padding: 10;
+  padding: 10px;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 100px;
+  
 }
 
 .device-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 0;
-  border-bottom: 1px solid #eee;
+  padding: 1rem;
   color: white; 
 }
 
-/* Optional: sensor reading spacing */
+
 .sensor-reading p {
   margin: 0.5rem 0;
+  color: white;
 }
 
+.sensor-reading {
+  margin: 20px;
+  color: white;
+}
 
+.voltage-sensor-reading {
+  color: white;
+  text-align: center;
+}
+
+.chart-mother{
+  display: flex;
+  flex-direction: row;
+  
+
+  gap: 2%;
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  width: 90%;
+  flex-flow: row wrap;
+  justify-content: center;
+
+}
 
 .chart-container {
-  display: flex;
-  gap: 20px;
-  margin-top: 20px;
-  justify-content: space-between;
-  padding: 1%;
-  flex-wrap: wrap;
+  background-color: #282828;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 49%;
+  min-width: 300px;
+  margin: 0;
+  text-align: center;
+  color: white;
+
+
 }
 
 .chart-item {
@@ -191,4 +294,5 @@
   box-sizing: border-box;
   
 }
+
 
