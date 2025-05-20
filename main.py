@@ -152,25 +152,28 @@ def get_sensor_data(user: dict = Depends(get_current_user), format: str = Query(
     conn = get_db()
     cursor = conn.cursor()
     data = cursor.execute("""
-        SELECT s.device_id, s.device_timestamp, s.temperature, s.voltage, s.current, s.watts
+        SELECT s.device_id, s.device_timestamp, s.temperature, s.voltage, s.current, s.watts, s.status
         FROM sensor_data s
         JOIN user_devices u ON s.device_id = u.device_id
         WHERE u.user_id = ?
-        ORDER BY s.id DESC LIMIT 200
+        ORDER BY s.id DESC LIMIT 3000
     """, (user["id"],)).fetchall()
     conn.close()
 
     if format.lower() == "csv":
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow(["voltage","current","watts"])
+        writer.writerow(["voltage","current","watts", "temperature", "status", "device_timestamp"])
 
         for row in data:
             writer.writerow([
                 str(round(row["voltage"],3)).replace(".",","),
                 str(round(row["current"],3)).replace(".",","),
-                str(round(row["watts"],3)).replace(".",",")])
-
+                str(round(row["watts"],3)).replace(".",","),
+                str(round(row["temperature"],3)).replace(".",","),
+                str(row["status"]).replace(".",","),
+                str(row["device_timestamp"]).replace(".",",")
+		])
         output.seek(0)
         return StreamingResponse(
             output,
@@ -186,7 +189,8 @@ def get_sensor_data(user: dict = Depends(get_current_user), format: str = Query(
         "temperature": round(row["temperature"],2),
         "voltage": round(row["voltage"],3),
         "current": round(row["current"],3),
-        "watts": round(row["watts"],3)
+        "watts": round(row["watts"],3),
+        "status":row["status"]
     } for row in data]
 
 if __name__ == "__main__":

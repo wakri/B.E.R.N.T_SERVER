@@ -4,7 +4,7 @@ import json
 
 # Database connection
 def get_db():
-    conn = sqlite3.connect("iot_database.db")
+    conn = sqlite3.connect("iot_database.db", check_same_thread=False)
     return conn
 
 # Callback when message is received
@@ -16,7 +16,7 @@ def on_message(client, userdata, msg):
         data = json.loads(message)
         
         # Ensure all required fields exist
-        required_keys = {"device_id", "device_timestamp", "temperature", "voltage", "current", "watts"}
+        required_keys = {"device_id", "device_timestamp", "temperature", "voltage", "current", "watts", "status"}
         if not required_keys.issubset(data.keys()):
             print(f" * Missing required keys in JSON: {data.keys()}")
             return

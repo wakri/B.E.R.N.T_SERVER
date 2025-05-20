@@ -315,7 +315,7 @@ export default function App() {
               <select id = "dropDown" value={selectedValue} onChange ={handleChange}>
                       <option value={20}>Hour</option>
                       <option value={200}>6 Hour</option>
-                      <option value={1000}>Day</option>
+                      <option value={2000}>Day</option>
                   </select>
   
               </div>
@@ -356,6 +356,9 @@ export default function App() {
                 </p>
                 <p>
                   <strong>Watts:</strong> {latestReading.watts}
+                </p>
+                <p>
+                  <strong>status_code:</strong> {latestReading.status}
                 </p>
               </div>
             ) : (
